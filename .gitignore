@@ -1,0 +1,19 @@
+# Secret keys - NEVER upload this
+.env
+
+# Virtual environment - too large to upload
+venv/
+
+# Generated files
+results.csv
+violation_rates.csv
+*.pdf
+*.png
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# VS Code settings
+.vscode/
