@@ -1,4 +1,4 @@
-# Secret keys - NEVER upload this
+# Secret keys 
 .env
 
 # Virtual environment - too large to upload
