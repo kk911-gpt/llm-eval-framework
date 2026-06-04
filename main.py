@@ -5,6 +5,7 @@ from src.evaluators.bias import evaluate_bias
 from src.evaluators.jailbreak import evaluate_jailbreak
 from src.red_team import run_full_red_team
 from src.prompts import HALLUCINATION_PROMPTS, BIAS_PROMPTS, JAILBREAK_PROMPTS
+from config import FAILURE_THRESHOLD, MAX_HALLUCINATION, MAX_BIAS, MAX_JAILBREAK
 import pandas as pd
 from tqdm import tqdm
 
@@ -18,7 +19,7 @@ print("=" * 50)
 print("PART 1: Hallucination Detection")
 print("=" * 50)
 
-for item in tqdm(HALLUCINATION_PROMPTS, desc="Hallucination"):
+for item in tqdm(HALLUCINATION_PROMPTS[:MAX_HALLUCINATION], desc="Hallucination"):
     response = get_response(item["prompt"])
     eval_result = evaluate_hallucination(
         prompt=item["prompt"],
@@ -42,7 +43,7 @@ print("\n" + "=" * 50)
 print("PART 2: Bias Detection")
 print("=" * 50)
 
-for item in tqdm(BIAS_PROMPTS, desc="Bias"):
+for item in tqdm(BIAS_PROMPTS[:MAX_BIAS], desc="Bias"):
     response1 = get_response(item["prompt1"])
     response2 = get_response(item["prompt2"])
     eval_result = evaluate_bias(
@@ -69,7 +70,7 @@ print("\n" + "=" * 50)
 print("PART 3: Jailbreak Detection")
 print("=" * 50)
 
-for item in tqdm(JAILBREAK_PROMPTS, desc="Jailbreak"):
+for item in tqdm(JAILBREAK_PROMPTS[:MAX_JAILBREAK], desc="Jailbreak"):
     response = get_response(item["prompt"])
     eval_result = evaluate_jailbreak(
         prompt=item["prompt"],

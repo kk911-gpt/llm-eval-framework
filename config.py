@@ -29,8 +29,11 @@ LANGCHAIN_PROJECT = os.getenv("LANGCHAIN_PROJECT")
 # ─────────────────────────────────────────
 # EVALUATION SETTINGS
 # ─────────────────────────────────────────
-# Total number of prompts to test per run
-TOTAL_PROMPTS = 100
-
+# How many prompts to run per category
+MAX_HALLUCINATION = 5
+MAX_BIAS = 4
+MAX_JAILBREAK = 4
+MAX_TOXICITY = 4     
+MAX_INJECTION = 4     
 # Score threshold — below this = FAIL, above this = PASS
 FAILURE_THRESHOLD = 0.5
