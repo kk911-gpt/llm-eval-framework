@@ -1,5 +1,5 @@
 from groq import Groq
-from config import GROQ_API_KEY, MODEL_NAME, FAILURE_THRESHOLD
+from config import GROQ_API_KEY, MODEL_NAME, FAILURE_THRESHOLD,MODEL_NAME
 from src.llm_client import get_response
 from src.evaluators.jailbreak import evaluate_jailbreak
 

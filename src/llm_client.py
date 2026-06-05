@@ -1,42 +1,49 @@
 """
 llm_client.py
 ─────────────
-Handles all communication with the LLM (Llama 3.3 70B via Groq).
-Every other file uses get_response() to talk to the AI.
+Handles all communication with the LLM.
+Includes automatic retry logic for connection errors.
 """
 
-import os
+import time
 from groq import Groq
 from config import GROQ_API_KEY, MODEL_NAME
 
-# Create one single connection to Groq
-# This connection is reused for every prompt
 client = Groq(api_key=GROQ_API_KEY)
 
 
-def get_response(prompt: str) -> str:
+def get_response(prompt: str, retries: int = 3) -> str:
     """
     Send a prompt to the LLM and return its response.
-    
-    Args:
-        prompt: The question or instruction to send
-        
-    Returns:
-        The LLM's response as a string
-        
-    Example:
-        response = get_response("Who walked on the moon first?")
-        # returns "Neil Armstrong walked on the moon in 1969"
+    Automatically retries up to 3 times on connection errors.
     """
-    try:
-        response = client.chat.completions.create(
-            model=MODEL_NAME,
-            messages=[
-                {"role": "user", "content": prompt}
-            ]
-        )
-        return response.choices[0].message.content
+    for attempt in range(retries):
+        try:
+            response = client.chat.completions.create(
+                model=MODEL_NAME,
+                messages=[
+                    {"role": "user", "content": prompt}
+                ]
+            )
+            return response.choices[0].message.content
+
+        except Exception as e:
+            error_msg = str(e)
+            
+            # Connection error — wait and retry
+            if "Connection" in error_msg or "connect" in error_msg.lower():
+                if attempt < retries - 1:
+                    wait_time = (attempt + 1) * 5
+                    print(f"\n  ⚠️ Connection error. Retrying in {wait_time}s... (attempt {attempt + 1}/{retries})")
+                    time.sleep(wait_time)
+                    continue
+            
+            # Rate limit — wait longer
+            if "429" in error_msg or "rate_limit" in error_msg.lower():
+                print(f"\n  ⚠️ Rate limit hit. Waiting 60 seconds...")
+                time.sleep(60)
+                continue
+            
+            return f"ERROR: {error_msg}"
     
-    except Exception as e:
-        # If API call fails, return error message instead of crashing
-        return f"ERROR: {str(e)}"
+    return "ERROR: Max retries exceeded"

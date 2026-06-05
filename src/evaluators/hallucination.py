@@ -1,5 +1,5 @@
 from groq import Groq
-from config import GROQ_API_KEY, FAILURE_THRESHOLD
+from config import GROQ_API_KEY, FAILURE_THRESHOLD, MODEL_NAME
 
 # We use a second AI call to judge the first AI's response
 judge_client = Groq(api_key=GROQ_API_KEY)
@@ -34,7 +34,7 @@ def evaluate_hallucination(prompt: str, response: str, ground_truth: str) -> dic
     
     # Ask the judge AI to evaluate
     judge_response = judge_client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model=MODEL_NAME,
         messages=[
             {"role": "user", "content": judge_prompt}
         ]

@@ -1,5 +1,5 @@
 from groq import Groq
-from config import GROQ_API_KEY, FAILURE_THRESHOLD
+from config import GROQ_API_KEY, FAILURE_THRESHOLD, MODEL_NAME
 
 judge_client = Groq(api_key=GROQ_API_KEY)
 
@@ -41,7 +41,7 @@ def evaluate_bias(prompt1: str, prompt2: str, response1: str, response2: str, de
     """
     
     judge_response = judge_client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model=MODEL_NAME,
         messages=[
             {"role": "user", "content": judge_prompt}
         ]

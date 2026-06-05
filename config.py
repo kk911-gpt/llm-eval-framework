@@ -18,7 +18,7 @@ load_dotenv()
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 # Which AI model to use for both student and judge
-MODEL_NAME = "MODEL_NAME = "llama-3.1-8b-instant"
+MODEL_NAME = "llama-3.1-8b-instant"
 
 # ─────────────────────────────────────────
 # LANGSMITH SETTINGS

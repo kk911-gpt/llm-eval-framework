@@ -4,8 +4,10 @@ from src.evaluators.hallucination import evaluate_hallucination
 from src.evaluators.bias import evaluate_bias
 from src.evaluators.jailbreak import evaluate_jailbreak
 from src.red_team import run_full_red_team
-from src.prompts import HALLUCINATION_PROMPTS, BIAS_PROMPTS, JAILBREAK_PROMPTS
-from config import FAILURE_THRESHOLD, MAX_HALLUCINATION, MAX_BIAS, MAX_JAILBREAK
+from src.evaluators.toxicity import evaluate_toxicity
+from src.evaluators.prompt_injection import evaluate_prompt_injection
+from src.prompts import HALLUCINATION_PROMPTS, BIAS_PROMPTS, JAILBREAK_PROMPTS, TOXICITY_PROMPTS, INJECTION_PROMPTS
+from config import FAILURE_THRESHOLD, MAX_HALLUCINATION, MAX_BIAS, MAX_JAILBREAK, MAX_TOXICITY, MAX_INJECTION
 import pandas as pd
 from tqdm import tqdm
 
@@ -14,7 +16,7 @@ results = []
 # ─────────────────────────────────────────
 # PART 1: HALLUCINATION
 # ─────────────────────────────────────────
-print("\n🚀 LLM Evaluation Framework — Day 5")
+print("\n🚀 LLM Evaluation Framework  ")
 print("=" * 50)
 print("PART 1: Hallucination Detection")
 print("=" * 50)
@@ -88,7 +90,73 @@ for item in tqdm(JAILBREAK_PROMPTS[:MAX_JAILBREAK], desc="Jailbreak"):
     results.append(result)
 
 # ─────────────────────────────────────────
-# PART 4: RED TEAMING LOOP
+# PART 4: TOXICITY DETECTION
+# ─────────────────────────────────────────
+print("\n" + "=" * 50)
+print("PART 4: Toxicity Detection")
+print("=" * 50)
+
+for item in tqdm(TOXICITY_PROMPTS[:MAX_TOXICITY], desc="Toxicity"):
+    # Get AI response
+    response = get_response(item["prompt"])
+    
+    # Judge the response for toxic content
+    eval_result = evaluate_toxicity(
+        prompt=item["prompt"],
+        response=response
+    )
+    
+    result = log_result(
+        prompt=item["prompt"],
+        response=response,
+        category=eval_result["category"],
+        score=eval_result["score"],
+        passed=eval_result["passed"]
+    )
+    result["judge_reasoning"] = eval_result.get("judge_reasoning", "")
+    result["toxic"] = eval_result.get("toxic", False)
+    result["toxicity_type"] = eval_result.get("toxicity_type", "NONE")
+    results.append(result)
+
+# ─────────────────────────────────────────
+# PART 5: PROMPT INJECTION DETECTION
+# ─────────────────────────────────────────
+print("\n" + "=" * 50)
+print("PART 5: Prompt Injection Detection")
+print("=" * 50)
+
+for item in tqdm(INJECTION_PROMPTS[:MAX_INJECTION], desc="Prompt Injection"):
+    # Combine task and content into one prompt
+    full_prompt = f"""
+    Your task: {item['system_task']}
+    
+    Content to process:
+    {item['injected_content']}
+    """
+    
+    # Get AI response
+    response = get_response(full_prompt)
+    
+    # Judge if injection succeeded
+    eval_result = evaluate_prompt_injection(
+        system_task=item["system_task"],
+        injected_content=item["injected_content"],
+        response=response
+    )
+    
+    result = log_result(
+        prompt=item["system_task"],
+        response=response,
+        category=eval_result["category"],
+        score=eval_result["score"],
+        passed=eval_result["passed"]
+    )
+    result["judge_reasoning"] = eval_result.get("judge_reasoning", "")
+    result["injected"] = eval_result.get("injected", False)
+    results.append(result)
+
+# ─────────────────────────────────────────
+# PART 6: RED TEAMING LOOP
 # ─────────────────────────────────────────
 print("\n" + "=" * 50)
 print("PART 4: Multi-Round Red Teaming")
