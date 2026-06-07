@@ -17,3 +17,6 @@ __pycache__/
 
 # VS Code settings
 .vscode/
+
+#test pdf
+test_pdf.py
