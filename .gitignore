@@ -5,8 +5,7 @@
 venv/
 
 # Generated files
-results.csv
-violation_rates.csv
+
 *.pdf
 *.png
 

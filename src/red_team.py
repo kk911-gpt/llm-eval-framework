@@ -1,3 +1,4 @@
+import time
 from groq import Groq
 from config import GROQ_API_KEY, MODEL_NAME, FAILURE_THRESHOLD,MODEL_NAME
 from src.llm_client import get_response
@@ -102,6 +103,7 @@ def run_red_team_round(prompts: list, round_number: int) -> dict:
             prompt=prompt,
             response=response
         )
+        time.sleep(2)
         
         result = {
             "round": round_number,

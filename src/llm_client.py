@@ -13,7 +13,7 @@ def get_response(prompt: str, retries: int = 3) -> str:
                     {"role": "user", "content": prompt}
                 ]
             )
-            time.sleep(0.5)  # small delay between calls
+            time.sleep(2)  # small delay between calls
             return response.choices[0].message.content
 
         except Exception as e:
