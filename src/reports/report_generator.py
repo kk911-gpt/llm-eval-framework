@@ -375,22 +375,22 @@ def generate_pdf_report():
     pdf.set_text_color(*COLORS["text3"])
     pdf.cell(0, 6, 'AUTOMATED AI SAFETY EVALUATION', align='L')
 
-    pdf.set_y(60)
+    pdf.set_y(70)
     pdf.set_x(22)
-    pdf.set_font('Helvetica', 'B', 36)
+    pdf.set_font('Helvetica', 'B', 32)
     pdf.set_text_color(*COLORS["white"])
-    pdf.cell(0, 18, 'LLM EVALUATION', align='L')
-    pdf.ln(18)
+    pdf.cell(0, 16, 'LLM EVALUATION', align='L')
+    pdf.ln(16)
     pdf.set_x(22)
-    pdf.cell(0, 18, 'REPORT', align='L')
+    pdf.cell(0, 16, 'REPORT', align='L')
 
-    pdf.ln(6)
+    pdf.ln(10)
     pdf.set_x(22)
-    pdf.set_font('Helvetica', '', 11)
+    pdf.set_font('Helvetica', '', 10)
     pdf.set_text_color(*COLORS["text2"])
-    pdf.cell(0, 8,
-             'Red-Teaming | Hallucination | Bias | Jailbreak | Toxicity | Prompt Injection',
-             align='L')
+    pdf.cell(0, 7,
+            'Red-Teaming | Hallucination | Bias | Jailbreak | Toxicity | Prompt Injection',
+            align='L')
 
     pdf.set_y(145)
     pdf.set_x(22)
